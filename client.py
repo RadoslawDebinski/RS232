@@ -34,7 +34,46 @@ class Client(QMainWindow):
         self.show()
 
     def sendMessage(self):
-        pass
+        # Get message
+        mess = self.textEdit.toPlainText()
+        # Convert message to int and RS format
+        intMess, packedMess = self.conversionRS232(mess)
+        # Create time waveforms
+        waveforms = [elem.replace('1', '_') for elem in packedMess]
+        waveforms = [elem.replace('0', '‾') for elem in waveforms]
+        waveforms = [' '.join(elem) for elem in waveforms]
+        # Combine signs with ASCII and waveforms
+        display = [f'{sign} - {integer} -  {waveform}' for sign, integer, waveform in zip(mess, intMess, waveforms)]
+        # Display for user
+        self.sentChain.setText('\n\n'.join(display))
+        # Send
+        self.receiveMess(packedMess)
+
+    def conversionRS232(self, mess):
+        # Convert to int
+        mess = [ord(c) for c in mess]
+        # Convert to bits
+        pureMess = [int(format(integer, 'b')) for integer in mess]
+        # Fill up to byte
+        pureMess = ["{:08d}".format(elem) for elem in pureMess]
+        # Add start bit and stop bits
+        packedMess = [f'0 {byte} 11' for byte in pureMess]
+        return mess, packedMess
+
+    def receiveMess(self, packedMess):
+        # Create time waveforms
+        waveforms = [elem.replace('1', '_') for elem in packedMess]
+        waveforms = [elem.replace('0', '‾') for elem in waveforms]
+        waveforms = [' '.join(elem) for elem in waveforms]
+        # Unpack bytes
+        unpacked = [elem[2:-3] for elem in packedMess]
+        unpacked = [int(str(byte), 2) for byte in unpacked]
+        # Convert to ASCII
+        mess = [chr(byte) for byte in unpacked]
+        # Combine waveforms with ASCII and signs
+        display = [f'{waveform} - {integer} -  {sign}' for waveform, integer, sign in zip(waveforms, unpacked, mess)]
+        # Display for user
+        self.receiveChain.setText('\n\n'.join(display))
 
 
 if __name__ == '__main__':

@@ -47,7 +47,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Last sended chain</string>
+     <string>Last sent chain</string>
     </property>
     <widget class="QTextEdit" name="textEdit_2">
      <property name="geometry">

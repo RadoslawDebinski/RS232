@@ -34,8 +34,7 @@ class UI(QMainWindow):
         self.show()
 
     def connectClient(self):
-        Popen([executable, 'C:\\ACIR-WETI\\sem 6\\Architektura systemów komputerowych\\RS232\\RS232\\client.py'])
-              # creationflags=CREATE_NEW_CONSOLE)
+        Popen([executable, 'client.py'])
         self.clients += 1
         self.textEdit.setText(f"No. Clients = {self.clients}")
 
