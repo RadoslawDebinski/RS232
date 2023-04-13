@@ -21,7 +21,7 @@ class UI(QMainWindow):
         self.addButton = self.findChild(QPushButton, "pushButton")
         self.textEdit = self.findChild(QTextEdit, "textEdit")
         # Initial textEdit message
-        self.textEdit.setText("No. Clients = 0")
+        self.textEdit.setText("Button not clicked")
         # Create a QFont object with a larger font size
         font = QFont()
         font.setPointSize(30)
@@ -30,13 +30,15 @@ class UI(QMainWindow):
         self.addButton.setFont(font)
         # Connect Widget
         self.addButton.clicked.connect(self.connectClient)
+        # Create main line
+        Popen([executable, 'dataBus.py'], creationflags=CREATE_NEW_CONSOLE)
         # Show the app
         self.show()
 
     def connectClient(self):
         Popen([executable, 'client.py'])
         self.clients += 1
-        self.textEdit.setText(f"No. Clients = {self.clients}")
+        self.textEdit.setText(f"Button clicking No. {self.clients}")
 
 
 if __name__ == '__main__':

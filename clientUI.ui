@@ -42,8 +42,8 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>781</width>
-      <height>211</height>
+      <width>381</width>
+      <height>371</height>
      </rect>
     </property>
     <property name="title">
@@ -54,8 +54,8 @@
       <rect>
        <x>13</x>
        <y>20</y>
-       <width>761</width>
-       <height>181</height>
+       <width>361</width>
+       <height>341</height>
       </rect>
      </property>
     </widget>
@@ -63,10 +63,10 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>250</y>
-      <width>781</width>
-      <height>211</height>
+      <x>400</x>
+      <y>20</y>
+      <width>381</width>
+      <height>371</height>
      </rect>
     </property>
     <property name="title">
@@ -77,11 +77,21 @@
       <rect>
        <x>13</x>
        <y>20</y>
-       <width>761</width>
-       <height>181</height>
+       <width>361</width>
+       <height>341</height>
       </rect>
      </property>
     </widget>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_4">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>400</y>
+      <width>771</width>
+      <height>81</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
