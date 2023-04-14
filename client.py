@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 
 import socket
 import threading
+import time
 
 
 class Client(QMainWindow):
@@ -25,6 +26,10 @@ class Client(QMainWindow):
         # Initial chains messages
         self.sentChain.setText("There will be shown last sent chain")
         self.receiveChain.setText("There will be shown last received chain")
+
+        # Data storage for receive chain and receive message box
+        self.storeReceiveChain = ''
+        self.storeReceiveMessBox = []
         # Create a QFont object with a larger font size
         font = QFont("Courier")
         font.setPointSize(13)
@@ -55,11 +60,14 @@ class Client(QMainWindow):
         waveforms = [elem.replace('0', '‾') for elem in waveforms]
         waveforms = [' '.join(elem) for elem in waveforms]
         # Combine signs with ASCII and waveforms
-        display = [" {:<3} {:<5} {:<13} ".format(sign, integer, waveform) for sign, integer, waveform in zip(mess, intMess, waveforms)]
+        display = [" {:<3} {:<4} {:<13} ".format(sign, integer, waveform) for sign, integer, waveform in zip(mess, intMess, waveforms)]
         # Display for user
         self.sentChain.setText('\n\n'.join(display))
         # Send
-        self.clientSideSocket.send(''.join(packedMess).encode())
+        for signChain in packedMess:
+            self.clientSideSocket.send(signChain.encode())
+            time.sleep(0.25)
+
 
     def conversionRS232(self, mess):
         # Convert to int
@@ -74,7 +82,7 @@ class Client(QMainWindow):
 
     def receiveMess(self):
         while True:
-            packedMess = self.clientSideSocket.recv(1024).decode()
+            packedMess = self.clientSideSocket.recv(88).decode()
             packedMess = [packedMess[i * self.packedMessLen: i * self.packedMessLen + self.packedMessLen]
                           for i in range(int(len(packedMess) / self.packedMessLen))]
             # Create time waveforms
@@ -89,12 +97,15 @@ class Client(QMainWindow):
             # Combine waveforms with ASCII and signs
             display = [" {:<13} {:<4} {:<3} ".format(waveform, integer, sign) for waveform, integer, sign in
                        zip(waveforms, unpacked, mess)]
-
+            # Update storages
+            self.storeReceiveChain = self.storeReceiveChain + f'{display[0]}\n'
+            self.storeReceiveMessBox.append(mess[0])
+            print(self.storeReceiveMessBox)
             # Display for user
             QMetaObject.invokeMethod(self.receiveChain, "setText", Qt.QueuedConnection,
-                                     Q_ARG(str, '\n\n'.join(display)))
+                                     Q_ARG(str, self.storeReceiveChain))
             QMetaObject.invokeMethod(self.receiveMessBox, "setText", Qt.QueuedConnection,
-                                     Q_ARG(str, ''.join(mess)))
+                                     Q_ARG(str, ''.join(self.storeReceiveMessBox)))
 
 
 if __name__ == '__main__':

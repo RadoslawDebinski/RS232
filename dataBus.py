@@ -12,7 +12,7 @@ def client_communication(client, address):
 
     while True:
         try:
-            messData = client.recv(1024)
+            messData = client.recv(88)
             # Sending other messages
             if messData:
                 print(f"[{address}] {messData.decode()}")
