@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>657</width>
-    <height>102</height>
+    <width>728</width>
+    <height>124</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,21 +20,24 @@
       <x>10</x>
       <y>10</y>
       <width>231</width>
-      <height>71</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="text">
      <string>Add Client</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
       <x>250</x>
       <y>10</y>
-      <width>391</width>
-      <height>71</height>
+      <width>461</width>
+      <height>81</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>Text Edit</string>
     </property>
    </widget>
   </widget>

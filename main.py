@@ -4,7 +4,7 @@ from subprocess import Popen, CREATE_NEW_CONSOLE
 from PyQt5 import uic
 import sys
 
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import *
 
 
@@ -19,7 +19,7 @@ class UI(QMainWindow):
 
         # Define Widget
         self.addButton = self.findChild(QPushButton, "pushButton")
-        self.textEdit = self.findChild(QTextEdit, "textEdit")
+        self.textEdit = self.findChild(QPushButton, "pushButton_2")
         # Initial textEdit message
         self.textEdit.setText("Button not clicked")
         # Create a QFont object with a larger font size

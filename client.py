@@ -9,6 +9,9 @@ from PyQt5.QtWidgets import *
 import socket
 import threading
 
+from prettytable import PrettyTable
+from prettytable import PrettyTable, ALL
+
 
 class Client(QMainWindow):
     def __init__(self, clientSideSocket):
@@ -27,10 +30,16 @@ class Client(QMainWindow):
         self.receiveChain.setText("There will be shown last received chain")
         # Create a QFont object with a larger font size
         font = QFont()
-        font.setPointSize(14)
-        # Set the font for the textEdits
+        font.setFamily("Courier")
+        font.setStyleHint(QFont.Monospace)
+        font.setPointSize(10)
+        # Set the font for the Chains
         self.sentChain.setFont(font)
         self.receiveChain.setFont(font)
+        # Set the font for the messages
+        font.setPointSize(30)
+        self.receiveMessBox.setFont(font)
+        self.textEdit.setFont(font)
         # Connect Widget
         self.sendButton.clicked.connect(self.sendMessage)
         # TCP/IP
@@ -49,9 +58,17 @@ class Client(QMainWindow):
         waveforms = [elem.replace('0', '‾') for elem in waveforms]
         waveforms = [' '.join(elem) for elem in waveforms]
         # Combine signs with ASCII and waveforms
-        display = [f'{sign} - {integer} -  {waveform}' for sign, integer, waveform in zip(mess, intMess, waveforms)]
+        columns = ['Sign', 'ASCII value', 'Waveform']
+
+        myTable = PrettyTable()
+
+        # Add Columns
+        myTable.add_column(columns[0], list(mess))
+        myTable.add_column(columns[1], intMess)
+        myTable.add_column(columns[2], waveforms)
+        myTable.hrules = ALL
         # Display for user
-        self.sentChain.setText('\n\n'.join(display))
+        self.sentChain.setText(myTable.get_string(padding_width=1, align="l"))
         # Send
         self.clientSideSocket.send(''.join(packedMess).encode())
 
@@ -80,12 +97,19 @@ class Client(QMainWindow):
             unpacked = [int(str(byte), 2) for byte in unpacked]
             # Convert to ASCII
             mess = [chr(byte) for byte in unpacked]
-            # Combine waveforms with ASCII and signs
-            display = [f'{waveform} - {integer} -  {sign}' for waveform, integer, sign in
-                       zip(waveforms, unpacked, mess)]
+
+            # Combine signs with ASCII and waveforms
+            columns = ['Waveform', 'ASCII value', 'Sign']
+            myTable = PrettyTable()
+            # Add Columns
+            myTable.add_column(columns[0], waveforms)
+            myTable.add_column(columns[1], unpacked)
+            myTable.add_column(columns[2], mess)
+            myTable.hrules = ALL
+
             # Display for user
             QMetaObject.invokeMethod(self.receiveChain, "setText", Qt.QueuedConnection,
-                                     Q_ARG(str, '\n\n'.join(display)))
+                                     Q_ARG(str, myTable.get_string(padding_width=1, align="l")))
             QMetaObject.invokeMethod(self.receiveMessBox, "setText", Qt.QueuedConnection,
                                      Q_ARG(str, ''.join(mess)))
 
