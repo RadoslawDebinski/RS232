@@ -32,6 +32,8 @@ class UI(QMainWindow):
         self.addButton.clicked.connect(self.connectClient)
         # Create main line
         Popen([executable, 'dataBus.py'], creationflags=CREATE_NEW_CONSOLE)
+        # Set resolution
+        self.setFixedSize(self.size())
         # Show the app
         self.show()
 
