@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="addClient">addClient.ui</file>
+        <file alias="clientUI">clientUI.ui</file>
+    </qresource>
+</RCC>
