@@ -12,7 +12,7 @@ def client_communication(client, address):
 
     while True:
         try:
-            messData = client.recv(88)
+            messData = client.recv(1024)
             # Sending other messages
             if messData:
                 print(f"[{address}] {messData.decode()}")
@@ -33,7 +33,7 @@ def client_communication(client, address):
 def server_program():
     serverSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = socket.gethostname()
-    port = 11000  # initiate port no above 1024
+    port = 42171  # initiate port no above 1024
 
     try:
         serverSideSocket.bind((host, port))

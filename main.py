@@ -31,7 +31,7 @@ class UI(QMainWindow):
         # Connect Widget
         self.addButton.clicked.connect(self.connectClient)
         # Create main line
-        Popen([executable, 'dataBus.py'], creationflags=CREATE_NEW_CONSOLE)
+        Popen([executable, 'dataBus.py'])  # , creationflags=CREATE_NEW_CONSOLE)
         # Set resolution
         self.setFixedSize(self.size())
         # Show the app
@@ -47,4 +47,3 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     UIWindow = UI()
     app.exec_()
-
