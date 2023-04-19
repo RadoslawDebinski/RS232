@@ -1,4 +1,3 @@
-import socket
 import threading
 
 # list of actually connected clients
@@ -29,6 +28,8 @@ def client_communication(client, address):
             print(f"[Client {address[0]} : {str(address[1])} disconnected by closing window]")
             break
 
+    client.close()
+
 
 def server_program(serverSideSocket):
     serverSideSocket.listen()
@@ -42,7 +43,3 @@ def server_program(serverSideSocket):
         clientThread = threading.Thread(target=client_communication, args=(client, address))
         clientThread.start()
         print(f"There is {threading.active_count() - 1} active connections now.")
-
-
-if __name__ == '__main__':
-    server_program()

@@ -1,5 +1,4 @@
 from PyQt5 import uic
-import sys
 
 from PyQt5.QtCore import QMetaObject, Q_ARG
 from PyQt5.QtGui import QFont
@@ -110,15 +109,10 @@ class ClientConnection:
         self.port = port
 
     def connect(self):
-        app = QApplication(sys.argv)
-
         clientSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
         clientSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         host = socket.gethostname()  # as both code is running on same pc
-
-        # clientSideSocket.bind((host, 0))  # assign socket to free port
-        # host, port = clientSideSocket.getsockname()
 
         clientSideSocket.connect((host, self.port))  # connect to the server
 
@@ -126,9 +120,4 @@ class ClientConnection:
         # Thread for receiving messages
         receiveThread = threading.Thread(target=UIWindow.receiveMess)
         receiveThread.start()
-        app.exec_()
-
-        clientSideSocket.close()  # close the connection
-
-if __name__ == '__main__':
-    ClientConnection()
+        UIWindow.show()

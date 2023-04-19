@@ -1,12 +1,10 @@
 import socket
 import threading
-from sys import executable
-from subprocess import Popen, CREATE_NEW_CONSOLE
 
 from PyQt5 import uic
 import sys
 
-from PyQt5.QtGui import QFont, QTextCursor
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from dataBus import server_program
 from client import ClientConnection
