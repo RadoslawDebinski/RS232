@@ -5,15 +5,21 @@ from PyQt5 import uic
 import sys
 
 from PyQt5.QtGui import QFont
+from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import *
 from dataBus import server_program
 from client import ClientConnection
+import ui
 
 
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        uic.loadUi("addClient.ui", self)
+
+        uiFile = QFile(":/addClient")
+        uiFile.open(QFile.ReadOnly)
+        uic.loadUi(uiFile, self)
+        uiFile.close()
         self.setWindowTitle("Controller")
 
         # Number of clients

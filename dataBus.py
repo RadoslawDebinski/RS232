@@ -42,4 +42,3 @@ def server_program(serverSideSocket):
         # Starting client thread
         clientThread = threading.Thread(target=client_communication, args=(client, address))
         clientThread.start()
-        print(f"There is {threading.active_count() - 1} active connections now.")

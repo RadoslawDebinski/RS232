@@ -1,6 +1,6 @@
 from PyQt5 import uic
 
-from PyQt5.QtCore import QMetaObject, Q_ARG
+from PyQt5.QtCore import QMetaObject, Q_ARG, QFile, QTextStream
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
@@ -8,11 +8,17 @@ from PyQt5.QtWidgets import *
 import socket
 import threading
 
+import ui
+
 
 class Client(QMainWindow):
     def __init__(self, clientSideSocket):
         super(Client, self).__init__()
-        uic.loadUi("clientUI.ui", self)
+
+        uiFile = QFile(":/clientUI")
+        uiFile.open(QFile.ReadOnly)
+        uic.loadUi(uiFile, self)
+        uiFile.close()
         self.setWindowTitle("Client")
 
         # Define Widget
@@ -92,10 +98,13 @@ class Client(QMainWindow):
             mess = (''.join(mess)).split(' ')
 
             # Swears detection
-            with open('swears.txt') as file:
-                contents = file.read()
-                contents = contents.split("\n")
-                clearMess = ['*' * len(word) if word in contents else word for word in mess]
+            file = QFile(':/swears')
+            if not file.open(QFile.ReadOnly | QFile.Text):
+                print("Something wrong with opening swears.txt from resources")
+            contents = QTextStream(file).readAll()
+            file.close()
+            contents = contents.split("\n")
+            clearMess = ['*' * len(word) if word in contents else word for word in mess]
 
             # Display for user
             QMetaObject.invokeMethod(self.receiveChain, "setText", Qt.QueuedConnection,
@@ -113,7 +122,6 @@ class ClientConnection:
         clientSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         host = socket.gethostname()  # as both code is running on same pc
-
         clientSideSocket.connect((host, self.port))  # connect to the server
 
         UIWindow = Client(clientSideSocket)
