@@ -1,23 +1,17 @@
-import sys
 from sys import executable
 from subprocess import Popen, CREATE_NEW_CONSOLE
 
 from PyQt5 import uic
-from PyQt5.QtCore import QFile
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import *
+import sys
 
-import ui
+from PyQt5.QtGui import QFont, QTextCursor
+from PyQt5.QtWidgets import *
 
 
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-
-        uiFile = QFile(":/addClient")
-        uiFile.open(QFile.ReadOnly)
-        uic.loadUi(uiFile, self)
-        uiFile.close()
+        uic.loadUi("addClient.ui", self)
         self.setWindowTitle("Controller")
 
         # Number of clients

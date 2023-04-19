@@ -1,7 +1,7 @@
 from PyQt5 import uic
 import sys
 
-from PyQt5.QtCore import QMetaObject, Q_ARG, QFile
+from PyQt5.QtCore import QMetaObject, Q_ARG
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
@@ -9,17 +9,11 @@ from PyQt5.QtWidgets import *
 import socket
 import threading
 
-import ui
-
 
 class Client(QMainWindow):
     def __init__(self, clientSideSocket):
         super(Client, self).__init__()
-
-        uiFile = QFile(":/clientUI")
-        uiFile.open(QFile.ReadOnly)
-        uic.loadUi(uiFile, self)
-        uiFile.close()
+        uic.loadUi("clientUI.ui", self)
         self.setWindowTitle("Client")
 
         # Define Widget
@@ -91,10 +85,12 @@ class Client(QMainWindow):
             unpacked = [elem[1:-2] for elem in packedMess]
             unpacked = [int(str(byte), 2) for byte in unpacked]
             # Convert to ASCII
-            mess = (''.join([chr(byte) for byte in unpacked])).split(' ')
+            mess = [chr(byte) for byte in unpacked]
             # Combine waveforms with ASCII and signs
             display = [" {:<13} {:<4} {:<3} ".format(waveform, integer, sign) for waveform, integer, sign in
                        zip(waveforms, unpacked, mess)]
+
+            mess = (''.join(mess)).split(' ')
 
             # Swears detection
             with open('swears.txt') as file:
@@ -112,12 +108,9 @@ class Client(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    clientSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
-    clientSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
     host = socket.gethostname()  # as both code is running on same pc
-    clientSideSocket.bind((host, 0))  # assign socket to free port
-    host, port = clientSideSocket.getsockname()
+    port = 50000  # socket server port number
+    clientSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
     clientSideSocket.connect((host, port))  # connect to the server
 
     UIWindow = Client(clientSideSocket)

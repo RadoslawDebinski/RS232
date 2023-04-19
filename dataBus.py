@@ -32,10 +32,13 @@ def client_communication(client, address):
 
 def server_program():
     serverSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    serverSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
     host = socket.gethostname()
-    serverSideSocket.bind((host, 0))  # assign socket to free port
+    port = 50000  # initiate port no above 1024
+
+    try:
+        serverSideSocket.bind((host, port))
+    except socket.error as e:
+        print(str(e))
 
     serverSideSocket.listen()
 
