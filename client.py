@@ -105,18 +105,30 @@ class Client(QMainWindow):
                                      Q_ARG(str, ' '.join(clearMess)))
 
 
+class ClientConnection:
+    def __init__(self, port):
+        self.port = port
+
+    def connect(self):
+        app = QApplication(sys.argv)
+
+        clientSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
+        clientSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        host = socket.gethostname()  # as both code is running on same pc
+
+        # clientSideSocket.bind((host, 0))  # assign socket to free port
+        # host, port = clientSideSocket.getsockname()
+
+        clientSideSocket.connect((host, self.port))  # connect to the server
+
+        UIWindow = Client(clientSideSocket)
+        # Thread for receiving messages
+        receiveThread = threading.Thread(target=UIWindow.receiveMess)
+        receiveThread.start()
+        app.exec_()
+
+        clientSideSocket.close()  # close the connection
+
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    host = socket.gethostname()  # as both code is running on same pc
-    port = 50000  # socket server port number
-    clientSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # AF_INET = IP, SOCK_STREAM = TCP
-    clientSideSocket.connect((host, port))  # connect to the server
-
-    UIWindow = Client(clientSideSocket)
-    # Thread for receiving messages
-    receiveThread = threading.Thread(target=UIWindow.receiveMess)
-    receiveThread.start()
-    app.exec_()
-
-    clientSideSocket.close()  # close the connection
+    ClientConnection()

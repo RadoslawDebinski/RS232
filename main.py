@@ -1,3 +1,5 @@
+import socket
+import threading
 from sys import executable
 from subprocess import Popen, CREATE_NEW_CONSOLE
 
@@ -6,6 +8,8 @@ import sys
 
 from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import *
+from dataBus import server_program
+from client import ClientConnection
 
 
 class UI(QMainWindow):
@@ -31,14 +35,26 @@ class UI(QMainWindow):
         # Connect Widget
         self.addButton.clicked.connect(self.connectClient)
         # Create main line
-        Popen([executable, 'dataBus.py'])  # , creationflags=CREATE_NEW_CONSOLE)
+
+        serverSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        serverSideSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        host = socket.gethostname()
+        serverSideSocket.bind((host, 0))  # assign socket to free port
+
+        self.actual_host, self.actual_port = serverSideSocket.getsockname()
+
+        serverThread = threading.Thread(target=server_program, args=(serverSideSocket, ))
+        serverThread.start()
+
         # Set resolution
         self.setFixedSize(self.size())
         # Show the app
         self.show()
 
     def connectClient(self):
-        Popen([executable, 'client.py'])
+        client = ClientConnection(self.actual_port)
+        client.connect()
         self.clients += 1
         self.textEdit.setText(f"Button clicking No. {self.clients}")
 

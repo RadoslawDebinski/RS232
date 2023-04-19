@@ -30,16 +30,7 @@ def client_communication(client, address):
             break
 
 
-def server_program():
-    serverSideSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = socket.gethostname()
-    port = 50000  # initiate port no above 1024
-
-    try:
-        serverSideSocket.bind((host, port))
-    except socket.error as e:
-        print(str(e))
-
+def server_program(serverSideSocket):
     serverSideSocket.listen()
 
     print('Bus is active...')
